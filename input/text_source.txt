@@ -1,0 +1,13 @@
+# This is a comment
+1| if(X < 0){
+2|   X = - X ;
+   }else{
+3|   X = 1 - X ;
+   }
+4| if(X = 1){
+5|   X = 1 ;
+   }else{
+6|   X = X + 1 ;
+   }
+# Print final result
+7| print(X)
