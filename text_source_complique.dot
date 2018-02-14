@@ -1,0 +1,168 @@
+digraph astgraph {
+  node [shape=circle, fontsize=12, fontname="Courier", height=.1];
+  ranksep=.3;
+  edge [arrowsize=.5]
+  node1 [label="Program"]
+  node2 [label="Compound SIMPLE"]
+  node3 [label="Label 0"]
+  node4 [label="="]
+  node5 [label="X"]
+  node6 [label="3"]
+  node4 -> node5
+  node4 -> node6
+  node3 -> node4
+  node7 [label="NoOp"]
+  node3 -> node7
+  node2 -> node3
+  node8 [label="Compound IF"]
+  node9 [label="IF"]
+  node10 [label="Label 1"]
+  node11 [label="<"]
+  node12 [label="X"]
+  node13 [label="0"]
+  node11 -> node12
+  node11 -> node13
+  node10 -> node11
+  node9 -> node10 [label="COND"]
+  node14 [label="Label 2"]
+  node15 [label="="]
+  node16 [label="X"]
+  node17 [label="unary -"]
+  node18 [label="X"]
+  node17 -> node18
+  node15 -> node16
+  node15 -> node17
+  node14 -> node15
+  node19 [label="NoOp"]
+  node14 -> node19
+  node9 -> node14 [label="IF TRUE"] 
+  node20 [label="Label 3"]
+  node21 [label="="]
+  node22 [label="X"]
+  node23 [label="-"]
+  node24 [label="1"]
+  node25 [label="X"]
+  node23 -> node24
+  node23 -> node25
+  node21 -> node22
+  node21 -> node23
+  node20 -> node21
+  node26 [label="NoOp"]
+  node20 -> node26
+  node9 -> node20 [label="ELSE"] 
+  node8 -> node9
+  node27 [label="Compound IF"]
+  node28 [label="IF"]
+  node29 [label="Label 4"]
+  node30 [label="=="]
+  node31 [label="X"]
+  node32 [label="1"]
+  node30 -> node31
+  node30 -> node32
+  node29 -> node30
+  node28 -> node29 [label="COND"]
+  node33 [label="Label 5"]
+  node34 [label="="]
+  node35 [label="X"]
+  node36 [label="1"]
+  node34 -> node35
+  node34 -> node36
+  node33 -> node34
+  node37 [label="NoOp"]
+  node33 -> node37
+  node28 -> node33 [label="IF TRUE"] 
+  node38 [label="Label 6"]
+  node39 [label="="]
+  node40 [label="X"]
+  node41 [label="+"]
+  node42 [label="X"]
+  node43 [label="1"]
+  node41 -> node42
+  node41 -> node43
+  node39 -> node40
+  node39 -> node41
+  node38 -> node39
+  node44 [label="NoOp"]
+  node38 -> node44
+  node28 -> node38 [label="ELSE"] 
+  node27 -> node28
+  node45 [label="Compound SIMPLE"]
+  node46 [label="Label 7"]
+  node47 [label="="]
+  node48 [label="Y"]
+  node49 [label="5"]
+  node47 -> node48
+  node47 -> node49
+  node46 -> node47
+  node50 [label="="]
+  node51 [label="X"]
+  node52 [label="+"]
+  node53 [label="Y"]
+  node54 [label="X"]
+  node52 -> node53
+  node52 -> node54
+  node50 -> node51
+  node50 -> node52
+  node46 -> node50
+  node55 [label="NoOp"]
+  node46 -> node55
+  node45 -> node46
+  node56 [label="Compound WHILE"]
+  node57 [label="WHILE"]
+  node58 [label="Label 8"]
+  node59 [label="<"]
+  node60 [label="X"]
+  node61 [label="9"]
+  node59 -> node60
+  node59 -> node61
+  node58 -> node59
+  node57 -> node58 [label="COND"]
+  node62 [label="Label 9"]
+  node63 [label="="]
+  node64 [label="X"]
+  node65 [label="+"]
+  node66 [label="X"]
+  node67 [label="3"]
+  node65 -> node66
+  node65 -> node67
+  node63 -> node64
+  node63 -> node65
+  node62 -> node63
+  node68 [label="NoOp"]
+  node62 -> node68
+  node57 -> node62 [label="IF TRUE"] 
+  node56 -> node57
+  node69 [label="Compound IF"]
+  node70 [label="IF"]
+  node71 [label="Label 10"]
+  node72 [label="<"]
+  node73 [label="X"]
+  node74 [label="10"]
+  node72 -> node73
+  node72 -> node74
+  node71 -> node72
+  node70 -> node71 [label="COND"]
+  node75 [label="Label 11"]
+  node76 [label="="]
+  node77 [label="Y"]
+  node78 [label="+"]
+  node79 [label="Y"]
+  node80 [label="X"]
+  node78 -> node79
+  node78 -> node80
+  node76 -> node77
+  node76 -> node78
+  node75 -> node76
+  node81 [label="NoOp"]
+  node75 -> node81
+  node70 -> node75 [label="IF TRUE"] 
+  node82 [label="NoOp"]
+  node70 -> node82 [label="ELSE"] 
+  node69 -> node70
+  node1 -> node2
+  node1 -> node8
+  node1 -> node27
+  node1 -> node45
+  node1 -> node56
+  node1 -> node69
+}

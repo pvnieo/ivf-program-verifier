@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "mainvisualize.py", line 169, in <module>
+    main()
+  File "mainvisualize.py", line 164, in main
+    content = viz.gendot()
+  File "mainvisualize.py", line 144, in gendot
+    tree = self.parser.parse()
+  File "C:\Users\acvkp\PycharmProjects\ivf\interpreter\Parser.py", line 371, in parse
+    node = self.program()
+  File "C:\Users\acvkp\PycharmProjects\ivf\interpreter\Parser.py", line 147, in program
+    compounds_node = self.compounds()
+  File "C:\Users\acvkp\PycharmProjects\ivf\interpreter\Parser.py", line 155, in compounds
+    node = self.compound()
+  File "C:\Users\acvkp\PycharmProjects\ivf\interpreter\Parser.py", line 167, in compound
+    return Compound('IF',self.ifblock())
+  File "C:\Users\acvkp\PycharmProjects\ivf\interpreter\Parser.py", line 172, in ifblock
+    cond_block = self.condblock()
+  File "C:\Users\acvkp\PycharmProjects\ivf\interpreter\Parser.py", line 181, in condblock
+    condition = self.condition()
+  File "C:\Users\acvkp\PycharmProjects\ivf\interpreter\Parser.py", line 197, in condition
+    self.lexer.error()
+  File "C:\Users\acvkp\PycharmProjects\ivf\interpreter\Lexer.py", line 77, in error
+    raise Exception('Invalid character ' + self.current_char)
+Exception: Invalid character  

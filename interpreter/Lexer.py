@@ -13,7 +13,7 @@ INTEGER_CONST = 'INTEGER_CONST'
 PLUS          = 'PLUS'
 MINUS         = 'MINUS'
 MUL           = 'MUL'
-DIV   = 'DIV'
+DIV           = 'DIV'
 LPAREN        = 'LPAREN'
 RPAREN        = 'RPAREN'
 ID            = 'ID'
@@ -24,6 +24,14 @@ BEGIN         = 'BEGIN'
 END           = 'END'
 SEMI          = 'SEMI'
 COLON         = 'COLON'
+LBRACKET      = 'LBRACKET'
+RBRACKET      = 'RBRACKET'
+INFERIOR      = 'INFERIOR'
+SUPERIOR      = 'SUPERIOR'
+EQUAL         = 'EQUAL'
+IF            = 'IF'
+ELSE          = 'ELSE'
+WHILE         = 'WHILE'
 EOF           = 'EOF'
 
 
@@ -52,6 +60,9 @@ RESERVED_KEYWORDS = {
     'DIV': Token('DIV', 'DIV'),
     'INTEGER': Token('INTEGER', 'INTEGER'),
     'BEGIN': Token('BEGIN', 'BEGIN'),
+    'IF': Token('IF','IF'),
+    'ELSE': Token('ELSE','ELSE'),
+    'WHILE': Token('WHILE','WHILE'),
     'END': Token('END', 'END'),
 }
 
@@ -65,7 +76,7 @@ class Lexer(object):
         self.current_char = self.text[self.pos]
 
     def error(self):
-        raise Exception('Invalid character')
+        raise Exception('Invalid character ' + self.current_char)
 
     def advance(self):
         """Advance the `pos` pointer and set the `current_char` variable."""
@@ -75,6 +86,7 @@ class Lexer(object):
         else:
             self.current_char = self.text[self.pos]
         # for debugging print(self.current_char)
+        # print(self.current_char)
 
     def peek(self):
         peek_pos = self.pos + 1
@@ -139,7 +151,7 @@ class Lexer(object):
             if self.current_char.isdigit():
                 return self.number()
 
-            if self.current_char == '=' :
+            if self.current_char == '=' and self.peek() != '=':
                 self.advance()
                 self.advance()
                 return Token(ASSIGN, '=')
@@ -176,27 +188,29 @@ class Lexer(object):
                 self.advance()
                 return Token(RPAREN, ')')
 
+            if self.current_char == '{':
+                self.advance()
+                return Token(LBRACKET, '{')
+
+            if self.current_char == '}':
+                self.advance()
+                return Token(RBRACKET, '}')
+
+            if self.current_char == '<':
+                self.advance()
+                return Token(INFERIOR, '<')
+
+            if self.current_char == '>':
+                self.advance()
+                return Token(SUPERIOR, '>')
+
+            if self.current_char == '=' and self.peek() == '=':
+                self.advance()
+                self.advance()
+                return Token(EQUAL, '==')
+
             self.error()
 
         return Token(EOF, None)
 
-    """
-    Custom methods 
-    def read_source(self, file):
-        content = [line.rstrip('\n') for line in open(file)]
-        return content
-
-    def clean(self, lines):
-        copy = []
-        # Remove comments
-        for line in lines:
-            if line.find('#') != -1:
-                pos = line.find('#')
-                line = line[:pos]
-                if line.strip() != '':
-                    copy.append(line)
-            else:
-                copy.append(line)
-        return copy
-    """
 

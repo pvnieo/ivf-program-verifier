@@ -1,3 +1,5 @@
+import json
+
 ###############################################################################
 #                                                                             #
 #  INTERPRETER                                                                #
@@ -13,20 +15,31 @@ INTEGER_CONST = 'INTEGER_CONST'
 PLUS          = 'PLUS'
 MINUS         = 'MINUS'
 MUL           = 'MUL'
-PROGRAM       = 'PROGRAM'
-DIV   = 'DIV'
+DIV           = 'DIV'
 LPAREN        = 'LPAREN'
 RPAREN        = 'RPAREN'
 ID            = 'ID'
+LABEL         = 'LABEL'
+PIPE          = 'PIPE'
 ASSIGN        = 'ASSIGN'
 BEGIN         = 'BEGIN'
 END           = 'END'
 SEMI          = 'SEMI'
 COLON         = 'COLON'
+LBRACKET      = 'LBRACKET'
+RBRACKET      = 'RBRACKET'
+INFERIOR      = 'INFERIOR'
+SUPERIOR      = 'SUPERIOR'
+EQUAL         = 'EQUAL'
+IF            = 'IF'
+ELSE          = 'ELSE'
+WHILE         = 'WHILE'
 EOF           = 'EOF'
 
 class NodeVisitor(object):
     def visit(self, node):
+        # to debug and follow which node is visited
+        #print(type(node).__name__)
         method_name = 'visit_' + type(node).__name__
         visitor = getattr(self, method_name, self.generic_visit)
         return visitor(node)
@@ -40,14 +53,17 @@ class Interpreter(NodeVisitor):
         self.parser = parser
         import collections
         self.GLOBAL_SCOPE = collections.OrderedDict()
+        self.visited = []
 
     def visit_Program(self, node):
-        self.visit(node.block)
+        for compound in node.compounds:
+            self.visit(compound)
 
     def visit_Block(self, node):
-        for declaration in node.declarations:
-            self.visit(declaration)
-        self.visit(node.compound_statement)
+        self.visited.append(node.label.value)
+        # print("VISITED : " + str(node.label.value))
+        for statement in node.statement_list:
+            self.visit(statement)
 
     def visit_VarDecl(self, node):
         # Do nothing
@@ -58,6 +74,7 @@ class Interpreter(NodeVisitor):
         pass
 
     def visit_BinOp(self, node):
+        #print("##### OP : " + node.op.type)
         if node.op.type == PLUS:
             return self.visit(node.left) + self.visit(node.right)
         elif node.op.type == MINUS:
@@ -66,6 +83,12 @@ class Interpreter(NodeVisitor):
             return self.visit(node.left) * self.visit(node.right)
         elif node.op.type == DIV:
             return self.visit(node.left) // self.visit(node.right)
+        elif node.op.type == SUPERIOR:
+            return self.visit(node.left) > self.visit(node.right)
+        elif node.op.type == INFERIOR:
+            return self.visit(node.left) < self.visit(node.right)
+        elif node.op.type == EQUAL:
+            return self.visit(node.left) == self.visit(node.right)
 
     def visit_Num(self, node):
         return node.value
@@ -78,8 +101,21 @@ class Interpreter(NodeVisitor):
             return -self.visit(node.expr)
 
     def visit_Compound(self, node):
-        for child in node.children:
-            self.visit(child)
+        self.visit(node.block)
+
+    def visit_IfBlock(self, node):
+        if self.visit(node.cond_block):
+            self.visit(node.block_true)
+        else:
+            self.visit(node.block_false)
+
+    def visit_CondBlock(self, node):
+        self.visited.append(node.label.value)
+        return self.visit(node.condition)
+
+    def visit_WhileBlock(self, node):
+        while self.visit(node.cond_block):
+            self.visit(node.block)
 
     def visit_Assign(self, node):
         var_name = node.left.value
@@ -99,7 +135,6 @@ class Interpreter(NodeVisitor):
 
     def interpret(self):
         tree = self.parser.parse()
-        exit()
         if tree is None:
             return ''
         return self.visit(tree)

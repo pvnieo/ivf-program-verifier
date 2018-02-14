@@ -1,11 +1,11 @@
 # This is a comment #
-1| if(X < 0){
+ IF( 1| X < 0){
 2|   X = - X ;
-   }else{
+   }ELSE{
 3|   X = 1 - X ;
    }
-4| if(X == 1){
+IF( 4| X == 1){
 5|   X = 1 ;
-   }else{
+   }ELSE{
 6|   X = X + 1 ;
    }

@@ -7,7 +7,7 @@
 
 ## To visualize
 # C:\Program Files (x86)\Graphviz2.38\bin
-# python mainvisualize.py input/text_source_simple.txt > test.dot && dot -Tpng -o test.png test.dot
+# python mainvisualize.py input/text_source_complique.txt > text_source_complique.dot && dot -Tpng -o text_source_complique.png text_source_complique.dot
 
 import argparse
 import textwrap
@@ -35,12 +35,64 @@ class ASTVisualizer(NodeVisitor):
         node._num = self.ncount
         self.ncount += 1
 
-        for block_node in node.blocklist:
-            self.visit(block_node)
+        for compound in node.compounds:
+            self.visit(compound)
 
-        for block_node in node.blocklist:
-            s = '  node{} -> node{}\n'.format(node._num, block_node._num)
+        for compound in node.compounds:
+            s = '  node{} -> node{}\n'.format(node._num, compound._num)
             self.dot_body.append(s)
+
+    def visit_Compound(self, node):
+        s = '  node{} [label="Compound {}"]\n'.format(self.ncount, node.type)
+        self.dot_body.append(s)
+        node._num = self.ncount
+        self.ncount += 1
+
+        self.visit(node.block)
+        s = '  node{} -> node{}\n'.format(node._num,  node.block._num)
+        self.dot_body.append(s)
+
+    def visit_IfBlock(self, node):
+        s = '  node{} [label="IF"]\n'.format(self.ncount)
+        self.dot_body.append(s)
+        node._num = self.ncount
+        self.ncount += 1
+
+        self.visit(node.cond_block)
+        s = '  node{} -> node{} [label="COND"]\n'.format(node._num,  node.cond_block._num)
+        self.dot_body.append(s)
+
+        self.visit(node.block_true)
+        s = '  node{} -> node{} [label="IF TRUE"] \n'.format(node._num,  node.block_true._num)
+        self.dot_body.append(s)
+
+        self.visit(node.block_false)
+        s = '  node{} -> node{} [label="ELSE"] \n'.format(node._num,  node.block_false._num)
+        self.dot_body.append(s)
+
+    def visit_WhileBlock(self, node):
+        s = '  node{} [label="WHILE"]\n'.format(self.ncount)
+        self.dot_body.append(s)
+        node._num = self.ncount
+        self.ncount += 1
+
+        self.visit(node.cond_block)
+        s = '  node{} -> node{} [label="COND"]\n'.format(node._num,  node.cond_block._num)
+        self.dot_body.append(s)
+
+        self.visit(node.block)
+        s = '  node{} -> node{} [label="IF TRUE"] \n'.format(node._num,  node.block._num)
+        self.dot_body.append(s)
+
+    def visit_CondBlock(self, node):
+        s = '  node{} [label="Label {}"]\n'.format(self.ncount, node.label.value)
+        self.dot_body.append(s)
+        node._num = self.ncount
+        self.ncount += 1
+
+        self.visit(node.condition)
+        s = '  node{} -> node{}\n'.format(node._num, node.condition._num)
+        self.dot_body.append(s)
 
     def visit_Block(self, node):
         s = '  node{} [label="Label {}"]\n'.format(self.ncount, node.label.value)
@@ -48,9 +100,9 @@ class ASTVisualizer(NodeVisitor):
         node._num = self.ncount
         self.ncount += 1
 
-        for child in node.statement_list:
-            self.visit(child)
-            s = '  node{} -> node{}\n'.format(node._num, child._num)
+        for statement in node.statement_list:
+            self.visit(statement)
+            s = '  node{} -> node{}\n'.format(node._num, statement._num)
             self.dot_body.append(s)
 
     def visit_VarDecl(self, node):
@@ -102,17 +154,6 @@ class ASTVisualizer(NodeVisitor):
         s = '  node{} -> node{}\n'.format(node._num, node.expr._num)
         self.dot_body.append(s)
 
-    def visit_Compound(self, node):
-        s = '  node{} [label="Compound"]\n'.format(self.ncount)
-        self.dot_body.append(s)
-        node._num = self.ncount
-        self.ncount += 1
-
-        for child in node.children:
-            self.visit(child)
-            s = '  node{} -> node{}\n'.format(node._num, child._num)
-            self.dot_body.append(s)
-
     def visit_Assign(self, node):
         s = '  node{} [label="{}"]\n'.format(self.ncount, node.op.value)
         self.dot_body.append(s)
@@ -138,6 +179,9 @@ class ASTVisualizer(NodeVisitor):
         node._num = self.ncount
         self.ncount += 1
 
+    def visit_NoneType(self, node):
+        return None
+
     def gendot(self):
         tree = self.parser.parse()
         self.visit(tree)
@@ -161,7 +205,6 @@ def main():
     viz = ASTVisualizer(parser)
     content = viz.gendot()
     print(content)
-
 
 if __name__ == '__main__':
     main()
