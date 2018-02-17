@@ -1,7 +1,9 @@
-from interpreter.Lexer import Lexer
-from interpreter.Parser import Parser
 import sys
 import networkx as nx
+import copy
+from interpreter.Lexer import Lexer
+from interpreter.Parser import Parser
+from cfg.NodeExtractor import NodeExtractor
 import pydot as pydot
 import matplotlib.pyplot as plt
 
@@ -25,6 +27,7 @@ class CfgParser:
         parser = Parser(lexer)
         self.parser = parser
         self.ast = self.parser.parse()
+        self.ne = NodeExtractor(copy.deepcopy(self.ast))
         self.cfg = nx.DiGraph()
         self.previous_label = ''
         self.labelsIf = []
@@ -72,11 +75,11 @@ class CfgParser:
             self.visit(node.block_false)
             node.label = [node.block_true.label, node.block_false.label]
             # connect cond to true_block and false_block
-            self.connectIf(cond_label, node.block_true.label, node.block_false.label)
+            self.connectIf(cond_label, node.block_true.label, node.block_false.label, node)
         else:
             # if no false block must connect to if source node for next compound
             node.label = [node.block_true.label, node.source]
-            self.connectIf(cond_label, node.block_true.label, None)
+            self.connectIf(cond_label, node.block_true.label, None, node)
 
     def visit_WhileBlock(self, node):
         self.visit(node.cond_block)
@@ -84,7 +87,7 @@ class CfgParser:
         node.source = node.cond_block.label.value
         node.label = node.block.label
         self.labelsWhile.append(node.source)
-        self.connectWhile(node.source, node.label, "")
+        self.connectWhile(node.source, node.label, "", node)
         # for WHILE, we need to connect not only the last label of the true block
         # to the next compound
         # but ALSO the decision label
@@ -104,10 +107,11 @@ class CfgParser:
         node.label = label
         node.source = label
 
-        #for statement in node.statement_list:
-        #    self.visit(statement)
-        #    s = '  node{} -> node{}\n'.format(node._num, statement._num)
-        #    self.dot_body.append(s)
+        code = ""
+        for statement in node.statement_list:
+            if type(statement).__name__ != 'NoOp':
+                code += self.visit(statement) + ' ; '
+        return code
 
     def addlabel(self, label):
         self.cfg.add_node(label, label=label)
@@ -115,7 +119,7 @@ class CfgParser:
             #self.cfg.add_edge(self.previous_label, label)
         self.previous_label = label
 
-    def connectIf(self,cl,tl, fl):
+    def connectIf(self,cl,tl, fl, node):
         """ cl : unique label of decision (condition)
             tl : (true) labels returned from true branch
             fl : (false) labels returned from false branch
@@ -127,27 +131,27 @@ class CfgParser:
             if isinstance(tl, int):
                 tl = [tl]
             if len(tl) == 1 :
-                self.cfg.add_edge(cl, tl[0], label=self.getCondition(cl))
+                self.cfg.add_edge(cl, tl[0], label=self.visit_BinOp(node.cond_block.condition))
             else:
-                # connect with fist label
-                self.connectIf(cl, tl[0], fl)
+                # connect with fist label of true block
+                self.connectIf(cl, tl[0], fl, node)
             if isinstance(fl, int):
                 fl = [fl]
             if len(fl) == 1 :
-                self.cfg.add_edge(cl, fl[0], label="! "+self.getCondition(cl))
+                self.cfg.add_edge(cl, fl[0], label="! "+self.visit_BinOp(node.cond_block.condition))
             else:
-                # connect with fist label
-                self.connectIf(cl, tl,fl[0])
+                # connect with fist label of false block
+                self.connectIf(cl, tl,fl[0], node)
         else:
             if isinstance(tl, int):
                 tl = [tl]
             if len(tl) == 1 :
-                self.cfg.add_edge(cl, tl[0], label=self.getCondition(cl))
+                self.cfg.add_edge(cl, tl[0], label=self.visit_BinOp(node.cond_block.condition))
             else:
-                # connect with fist label
-                self.connectIf(cl, tl[0], fl)
+                # connect with fist label of true block
+                self.connectIf(cl, tl[0], fl, node)
 
-    def connectWhile(self, cl, tl, direction):
+    def connectWhile(self, cl, tl, direction, node):
         """
         Connect while labels like for connectIF :
         connect decision label to first assigment label
@@ -157,16 +161,19 @@ class CfgParser:
             tl = [tl]
         # connect decision label to first assigment label
         if len(tl) == 1 and direction != "LAST":
-            self.cfg.add_edge(cl, tl[0], label=self.getCondition(cl))
+            self.cfg.add_edge(cl, tl[0], label=self.visit_BinOp(node.cond_block.condition))
         elif direction != "LAST":
             # connect with fist label
-            self.connectWhile(cl, tl[0], "FIRST")
+            self.connectWhile(cl, tl[0], "FIRST", node)
         # connect last assigment label to decision label
         if len(tl) == 1 and direction != "FIRST":
-            self.cfg.add_edge(tl[0], cl, label=self.getAssignments(tl[0]))
+            # to extract the assigment label, we just extract the block whose label matches
+            # and then we visit it ...
+            assign_label = self.visit(copy.deepcopy(self.ne.extractBlockFromLabel(tl[0])))
+            self.cfg.add_edge(tl[0], cl, label=assign_label)
         elif direction != "FIRST":
             # connect with fist label
-            self.connectWhile(cl, tl[-1], "LAST")
+            self.connectWhile(cl, tl[-1], "LAST", node)
 
     def connectCompounds(self,previous_labels, next_label):
         """ Connect compounds recursively
@@ -180,29 +187,16 @@ class CfgParser:
             if isinstance(labels, int):
                 labels = [labels]
             if len(labels) == 1:
-                self.cfg.add_edge(labels[0], next_label)
+                # if the node is a condition, we must add "!" in front since if it was a direct condition
+                # from a while or if, the edge would have been handled in connectWhile or connect If
+                subtree = copy.deepcopy(self.ne.extractBlockFromLabel(labels[0]))
+                if type(subtree).__name__ == 'BinOp':
+                    assign_label = '! '+self.visit(subtree)
+                else:
+                    assign_label = self.visit(subtree)
+                self.cfg.add_edge(labels[0], next_label, label=assign_label)
             else:
                 self.connectCompounds(labels[-1], next_label)
-
-    def visit_VarDecl(self, node):
-        s = '  node{} [label="VarDecl"]\n'.format(self.ncount)
-        self.dot_body.append(s)
-        node._num = self.ncount
-        self.ncount += 1
-
-        self.visit(node.var_node)
-        s = '  node{} -> node{}\n'.format(node._num, node.var_node._num)
-        self.dot_body.append(s)
-
-        self.visit(node.type_node)
-        s = '  node{} -> node{}\n'.format(node._num, node.type_node._num)
-        self.dot_body.append(s)
-
-    def visit_Type(self, node):
-        s = '  node{} [label="{}"]\n'.format(self.ncount, node.token.value)
-        self.dot_body.append(s)
-        node._num = self.ncount
-        self.ncount += 1
 
     def visit_Num(self, node):
         s = '  node{} [label="{}"]\n'.format(self.ncount, node.token.value)
@@ -211,64 +205,32 @@ class CfgParser:
         self.ncount += 1
 
     def visit_BinOp(self, node):
-        s = '  node{} [label="{}"]\n'.format(self.ncount, node.op.value)
-        self.dot_body.append(s)
-        node._num = self.ncount
-        self.ncount += 1
-
-        self.visit(node.left)
-        self.visit(node.right)
-
-        for child_node in (node.left, node.right):
-            s = '  node{} -> node{}\n'.format(node._num, child_node._num)
-            self.dot_body.append(s)
+        return self.visit(node.left) + self.s(node.op.value) + self.visit(node.right)
 
     def visit_UnaryOp(self, node):
-        s = '  node{} [label="unary {}"]\n'.format(self.ncount, node.op.value)
-        self.dot_body.append(s)
-        node._num = self.ncount
-        self.ncount += 1
-
-        self.visit(node.expr)
-        s = '  node{} -> node{}\n'.format(node._num, node.expr._num)
-        self.dot_body.append(s)
+        return str(self.visit(node.expr))
 
     def visit_Assign(self, node):
-        s = '  node{} [label="{}"]\n'.format(self.ncount, node.op.value)
-        self.dot_body.append(s)
-        node._num = self.ncount
-        self.ncount += 1
-
         self.visit(node.left)
         self.visit(node.right)
-
-        for child_node in (node.left, node.right):
-            s = '  node{} -> node{}\n'.format(node._num, child_node._num)
-            self.dot_body.append(s)
+        return self.visit(node.left) + ' = ' + self.visit(node.right)
 
     def visit_Var(self, node):
-        s = '  node{} [label="{}"]\n'.format(self.ncount, node.value)
-        self.dot_body.append(s)
-        node._num = self.ncount
-        self.ncount += 1
+        return node.value
 
     def visit_NoOp(self, node):
         pass
 
+    def visit_Num(self, node):
+        return str(node.value)
+
     def visit_NoneType(self, node):
         return None
 
-    def getCondition(self, label):
-        src = self.text_source
-        from_pos = src.find(str(label)+':')+len(str(label))+1 #don't want label
-        return 'todo'
+    def s(self, str):
+        return " "+str+" "
 
-    def getAssignments(self, label):
-        src = self.text_source
-        from_pos = src.find(str(label)+':')+len(str(label))+1  #don't want label
-        return 'todo'
-
-    def gendot(self):
+    def parse(self):
         self.visit(self.ast)
         self.show()
 
@@ -285,8 +247,3 @@ class CfgParser:
         print('To visualize : ')
         print('dot -Tpng -o cfg.png cfg.dot')
 
-
-sys.argv.append('input/text_source_complique.txt')
-text_source_original = open(sys.argv[1], 'r').read()
-cfgparser = CfgParser(text_source_original)
-content = cfgparser.gendot()
