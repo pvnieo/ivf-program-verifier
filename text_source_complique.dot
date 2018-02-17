@@ -114,99 +114,133 @@ digraph astgraph {
   node61 [label="NoOp"]
   node55 -> node61
   node54 -> node55
+  node62 [label="Compound SIMPLE"]
+  node63 [label="Label 9"]
+  node64 [label="="]
+  node65 [label="X"]
+  node66 [label="*"]
+  node67 [label="X"]
+  node68 [label="unary -"]
+  node69 [label="1"]
+  node68 -> node69
+  node66 -> node67
+  node66 -> node68
+  node64 -> node65
+  node64 -> node66
+  node63 -> node64
+  node70 [label="NoOp"]
+  node63 -> node70
+  node62 -> node63
   node53 -> node54
+  node53 -> node62
   node48 -> node53 [label="IF TRUE"] 
-  node62 [label="NoOp"]
-  node48 -> node62 [label="ELSE"] 
+  node71 [label="NoOp"]
+  node48 -> node71 [label="ELSE"] 
   node47 -> node48
   node38 -> node39
   node38 -> node47
   node26 -> node38 [label="ELSE"] 
   node25 -> node26
-  node63 [label="Compound SIMPLE"]
-  node64 [label="Label 8"]
-  node65 [label="="]
-  node66 [label="Y"]
-  node67 [label="5"]
-  node65 -> node66
-  node65 -> node67
-  node64 -> node65
-  node68 [label="="]
-  node69 [label="X"]
-  node70 [label="+"]
-  node71 [label="Y"]
-  node72 [label="X"]
-  node70 -> node71
-  node70 -> node72
-  node68 -> node69
-  node68 -> node70
-  node64 -> node68
-  node73 [label="NoOp"]
-  node64 -> node73
-  node63 -> node64
-  node74 [label="Compound WHILE"]
-  node75 [label="WHILE"]
-  node76 [label="Label 9"]
-  node77 [label="<"]
+  node72 [label="Compound SIMPLE"]
+  node73 [label="Label 10"]
+  node74 [label="="]
+  node75 [label="Y"]
+  node76 [label="5"]
+  node74 -> node75
+  node74 -> node76
+  node73 -> node74
+  node77 [label="="]
   node78 [label="X"]
-  node79 [label="9"]
+  node79 [label="+"]
+  node80 [label="Y"]
+  node81 [label="X"]
+  node79 -> node80
+  node79 -> node81
   node77 -> node78
   node77 -> node79
-  node76 -> node77
-  node75 -> node76 [label="COND"]
-  node80 [label="Compounds"]
-  node81 [label="Compound SIMPLE"]
-  node82 [label="Label 10"]
-  node83 [label="="]
-  node84 [label="X"]
-  node85 [label="+"]
-  node86 [label="X"]
-  node87 [label="3"]
+  node73 -> node77
+  node82 [label="NoOp"]
+  node73 -> node82
+  node72 -> node73
+  node83 [label="Compound WHILE"]
+  node84 [label="WHILE"]
+  node85 [label="Label 11"]
+  node86 [label="<"]
+  node87 [label="X"]
+  node88 [label="9"]
+  node86 -> node87
+  node86 -> node88
   node85 -> node86
-  node85 -> node87
-  node83 -> node84
-  node83 -> node85
-  node82 -> node83
-  node88 [label="NoOp"]
-  node82 -> node88
-  node81 -> node82
-  node80 -> node81
-  node75 -> node80 [label="IF TRUE"] 
-  node74 -> node75
-  node89 [label="Compound IF"]
-  node90 [label="IF"]
-  node91 [label="Label 11"]
-  node92 [label="<"]
+  node84 -> node85 [label="COND"]
+  node89 [label="Compounds"]
+  node90 [label="Compound SIMPLE"]
+  node91 [label="Label 12"]
+  node92 [label="="]
   node93 [label="X"]
-  node94 [label="10"]
+  node94 [label="+"]
+  node95 [label="X"]
+  node96 [label="3"]
+  node94 -> node95
+  node94 -> node96
   node92 -> node93
   node92 -> node94
   node91 -> node92
-  node90 -> node91 [label="COND"]
-  node95 [label="Compounds"]
-  node96 [label="Compound SIMPLE"]
-  node97 [label="Label 12"]
-  node98 [label="="]
-  node99 [label="Y"]
-  node100 [label="+"]
-  node101 [label="Y"]
-  node102 [label="X"]
+  node97 [label="NoOp"]
+  node91 -> node97
+  node90 -> node91
+  node98 [label="Compound SIMPLE"]
+  node99 [label="Label 13"]
+  node100 [label="="]
+  node101 [label="X"]
+  node102 [label="*"]
+  node103 [label="X"]
+  node104 [label="2"]
+  node102 -> node103
+  node102 -> node104
   node100 -> node101
   node100 -> node102
+  node99 -> node100
+  node105 [label="NoOp"]
+  node99 -> node105
   node98 -> node99
-  node98 -> node100
-  node97 -> node98
-  node103 [label="NoOp"]
-  node97 -> node103
-  node96 -> node97
-  node95 -> node96
-  node90 -> node95 [label="IF TRUE"] 
-  node104 [label="NoOp"]
-  node90 -> node104 [label="ELSE"] 
   node89 -> node90
+  node89 -> node98
+  node84 -> node89 [label="IF TRUE"] 
+  node83 -> node84
+  node106 [label="Compound IF"]
+  node107 [label="IF"]
+  node108 [label="Label 14"]
+  node109 [label="<"]
+  node110 [label="X"]
+  node111 [label="10"]
+  node109 -> node110
+  node109 -> node111
+  node108 -> node109
+  node107 -> node108 [label="COND"]
+  node112 [label="Compounds"]
+  node113 [label="Compound SIMPLE"]
+  node114 [label="Label 15"]
+  node115 [label="="]
+  node116 [label="Y"]
+  node117 [label="+"]
+  node118 [label="Y"]
+  node119 [label="X"]
+  node117 -> node118
+  node117 -> node119
+  node115 -> node116
+  node115 -> node117
+  node114 -> node115
+  node120 [label="NoOp"]
+  node114 -> node120
+  node113 -> node114
+  node112 -> node113
+  node107 -> node112 [label="IF TRUE"] 
+  node121 [label="NoOp"]
+  node107 -> node121 [label="ELSE"] 
+  node106 -> node107
   node1 -> node2
   node1 -> node25
-  node1 -> node63
-  node1 -> node74
-  node1 -> node89
+  node1 -> node72
+  node1 -> node83
+  node1 -> node106
 }

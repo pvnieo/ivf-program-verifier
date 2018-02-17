@@ -67,6 +67,8 @@ class Compound(AST):
     def __init__(self, type, cblock):
         self.cblock = cblock
         self.type = type
+        self.label = None
+        self.source = None
 
 class IfBlock(AST):
     """ Represents an IF block, actually made of three"""
@@ -74,12 +76,16 @@ class IfBlock(AST):
         self.cond_block = cond_block
         self.block_true = block_true
         self.block_false = block_false
+        self.label = None
+        self.source = None
 
 class WhileBlock(AST):
     """ Represents a WHILE block, actually made of two"""
     def __init__(self, cond_block, block):
         self.cond_block = cond_block
         self.block = block
+        self.label = None
+        self.source = None
 
 class CondBlock(AST):
     """ Represent a condition block with a label"""
@@ -106,6 +112,7 @@ class Block(AST):
     def __init__(self, label, statement_list):
         self.label = label
         self.statement_list = statement_list
+        self.source = None
 
 class VarDecl(AST):
     def __init__(self, var_node, type_node):
@@ -122,6 +129,8 @@ class Program(AST):
     def __init__(self, name, compounds):
         self.name = name
         self.compounds = compounds
+        self.label = None
+        self.source = None
 
 class Parser(object):
     def __init__(self, lexer):

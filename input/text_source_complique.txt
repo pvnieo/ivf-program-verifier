@@ -10,15 +10,17 @@ IF( 4: X == 1){
 6:   X = X + 1 ;
      IF( 7: X < 13 ){
         8: X = X + 3 ;
+        9: X = X * -1 ;
      }
    }
 #Another comment #
-8: Y = 5 ;
+10: Y = 5 ;
    X = Y + X ;
 # Testing a while #
-WHILE( 9: X < 9 ){
-    10: X = X + 3 ;
+WHILE( 11: X < 9 ){
+    12: X = X + 3 ;
+    13: X = X * 2 ;
 }
-IF( 11: X < 10 ){
-    12: Y = Y + X ;
+IF( 14: X < 10 ){
+    15: Y = Y + X ;
 }
