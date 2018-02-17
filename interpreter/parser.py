@@ -36,6 +36,7 @@ ELSE          = 'ELSE'
 WHILE         = 'WHILE'
 EOF           = 'EOF'
 
+
 class AST(object):
     pass
 
@@ -56,14 +57,15 @@ class UnaryOp(AST):
         self.expr = expr
 
 class Label(AST):
-    def __init__(self, token):
+    def __init__(self, token, type):
         self.token = token
         self.value = token.value
+        self.type = type
 
 class Compound(AST):
-    """Represents either a simple block or a IF block"""
-    def __init__(self, type, block):
-        self.block = block
+    """Represents either a simple block or a IF block or WHILE """
+    def __init__(self, type, cblock):
+        self.cblock = cblock
         self.type = type
 
 class IfBlock(AST):
@@ -170,37 +172,37 @@ class Parser(object):
         elif self.current_token.type == WHILE:
             return Compound('WHILE', self.whileblock())
         else:
-            return Compound('SIMPLE', self.block())
+            return Compound('SIMPLE', self.block(ASSIGN))
 
     def ifblock(self):
         self.eat(IF)
         self.eat(LPAREN)
-        cond_block = self.condblock()
+        cond_block = self.condblock(IF)
         self.eat(RPAREN)
         self.eat(LBRACKET)
-        true_block = self.block()
+        true_compounds = self.program()
         self.eat(RBRACKET)
         if self.current_token.type == ELSE :
             self.eat(ELSE)
             self.eat(LBRACKET)
-            false_block = self.block()
+            false_compounds = self.program()
             self.eat(RBRACKET)
         else :
-            false_block = NoOp()
-        return IfBlock(cond_block, true_block, false_block)
+            false_compounds = NoOp()
+        return IfBlock(cond_block, true_compounds, false_compounds)
 
     def whileblock(self):
         self.eat(WHILE)
         self.eat(LPAREN)
-        cond_block = self.condblock()
+        cond_block = self.condblock(WHILE)
         self.eat(RPAREN)
         self.eat(LBRACKET)
-        block = self.block()
+        compounds = self.program()
         self.eat(RBRACKET)
-        return WhileBlock(cond_block, block)
+        return WhileBlock(cond_block, compounds)
 
-    def condblock(self):
-        label = self.label()
+    def condblock(self, type):
+        label = self.label(type)
         condition = self.condition()
         return CondBlock(label, condition)
 
@@ -218,9 +220,9 @@ class Parser(object):
         expr = self.expr()
         return BinOp(variable, op, expr)
 
-    def block(self):
+    def block(self, type):
         """block : LABEL * statement_list """
-        label = self.label()
+        label = self.label(type)
         nodes = self.statement_list()
         root = Block(label, nodes)
         return root
@@ -235,15 +237,15 @@ class Parser(object):
         node = Type(token)
         return node
 
-    def label(self):
+    def label(self, type):
         """
         label: INTEGER * COLON
         """
         peek = self.lexer.current_char
         if peek == ':':
-            node = Label(self.current_token)
+            node = Label(self.current_token, type)
             # add label to list of labels
-            self.labels.append(self.current_token.value)
+            self.labels.append(node)
             self.eat(INTEGER_CONST)
             self.eat(COLON)
         else:
@@ -369,9 +371,9 @@ class Parser(object):
         program : BOF compounds EOF
         compounds : compound | compounds
         compound : if_block | while_block | block
-        if_block : IF( * cond_block * ) * { * block * }
-                    | IF( * cond_block * ) * { block } * ELSE * { * block * }
-        while_block : WHILE( * cond_block * ) * { * block * }
+        if_block : IF( * cond_block * ) * { * compound * }
+                    | IF( * cond_block * ) * { compound } * ELSE * { * compound * }
+        while_block : WHILE( * cond_block * ) * { * compound * }
         cond_block : label condition
         block : label statement_list
         condition : variable SUPERIOR|INFERIOR|EQUAL expr

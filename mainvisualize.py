@@ -30,7 +30,7 @@ class ASTVisualizer(NodeVisitor):
         self.dot_footer = ['}']
 
     def visit_Program(self, node):
-        s = '  node{} [label="Program"]\n'.format(self.ncount)
+        s = '  node{} [label="Compounds"]\n'.format(self.ncount)
         self.dot_body.append(s)
         node._num = self.ncount
         self.ncount += 1
@@ -48,8 +48,8 @@ class ASTVisualizer(NodeVisitor):
         node._num = self.ncount
         self.ncount += 1
 
-        self.visit(node.block)
-        s = '  node{} -> node{}\n'.format(node._num,  node.block._num)
+        self.visit(node.cblock)
+        s = '  node{} -> node{}\n'.format(node._num,  node.cblock._num)
         self.dot_body.append(s)
 
     def visit_IfBlock(self, node):

@@ -60,7 +60,7 @@ class Interpreter(NodeVisitor):
             self.visit(compound)
 
     def visit_Block(self, node):
-        self.visited.append(node.label.value)
+        self.visited.append(node.label)
         # print("VISITED : " + str(node.label.value))
         for statement in node.statement_list:
             self.visit(statement)
@@ -101,7 +101,7 @@ class Interpreter(NodeVisitor):
             return -self.visit(node.expr)
 
     def visit_Compound(self, node):
-        self.visit(node.block)
+        self.visit(node.cblock)
 
     def visit_IfBlock(self, node):
         if self.visit(node.cond_block):
@@ -110,7 +110,7 @@ class Interpreter(NodeVisitor):
             self.visit(node.block_false)
 
     def visit_CondBlock(self, node):
-        self.visited.append(node.label.value)
+        self.visited.append(node.label)
         return self.visit(node.condition)
 
     def visit_WhileBlock(self, node):

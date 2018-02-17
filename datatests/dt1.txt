@@ -1,0 +1,2 @@
+# Important : keep spaces around "=" #
+{(X = -1, Y = 6);(X = 42)}

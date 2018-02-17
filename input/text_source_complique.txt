@@ -1,22 +1,24 @@
-0: X = 3 ;
 # This is a comment #
  IF( 1: X < 0){
 2:   X = - X ;
    }ELSE{
-3:   X = 1 - X ;
+3:   X = X -10 ;
    }
 IF( 4: X == 1){
 5:   X = 1 ;
    }ELSE{
 6:   X = X + 1 ;
+     IF( 7: X < 13 ){
+        8: X = X + 3 ;
+     }
    }
 #Another comment #
-7: Y = 5 ;
+8: Y = 5 ;
    X = Y + X ;
 # Testing a while #
-WHILE( 8: X < 9 ){
-    9: X = X + 3 ;
+WHILE( 9: X < 9 ){
+    10: X = X + 3 ;
 }
-IF( 10: X < 10 ){
-    11: Y = Y + X ;
+IF( 11: X < 10 ){
+    12: Y = Y + X ;
 }
