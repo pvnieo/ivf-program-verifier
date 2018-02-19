@@ -8,7 +8,6 @@
 #
 # EOF (end-of-file) token is used to indicate that
 # there is no more input left for lexical analysis
-INTEGER       = 'INTEGER'
 INTEGER_CONST = 'INTEGER_CONST'
 PLUS          = 'PLUS'
 MINUS         = 'MINUS'
@@ -59,7 +58,6 @@ class Token(object):
 
 RESERVED_KEYWORDS = {
     'DIV': Token('DIV', 'DIV'),
-    'INTEGER': Token('INTEGER', 'INTEGER'),
     'BEGIN': Token('BEGIN', 'BEGIN'),
     'IF': Token('IF','IF'),
     'ELSE': Token('ELSE','ELSE'),

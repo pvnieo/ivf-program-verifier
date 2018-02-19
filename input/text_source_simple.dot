@@ -1,0 +1,78 @@
+digraph astgraph {
+  node [shape=circle, fontsize=12, fontname="Courier", height=.1];
+  ranksep=.3;
+  edge [arrowsize=.5]
+  node1 [label="Compounds"]
+  node2 [label="Compound SIMPLE"]
+  node3 [label="Label 2"]
+  node4 [label="="]
+  node5 [label="X"]
+  node6 [label="-"]
+  node7 [label="0"]
+  node8 [label="X"]
+  node6 -> node7
+  node6 -> node8
+  node4 -> node5
+  node4 -> node6
+  node3 -> node4
+  node9 [label="NoOp"]
+  node3 -> node9
+  node2 -> node3
+  node10 [label="Compound SIMPLE"]
+  node11 [label="Label 3"]
+  node12 [label="="]
+  node13 [label="X"]
+  node14 [label="-"]
+  node15 [label="1"]
+  node16 [label="X"]
+  node14 -> node15
+  node14 -> node16
+  node12 -> node13
+  node12 -> node14
+  node11 -> node12
+  node17 [label="NoOp"]
+  node11 -> node17
+  node10 -> node11
+  node18 [label="Compound SIMPLE"]
+  node19 [label="Label 5"]
+  node20 [label="="]
+  node21 [label="X"]
+  node22 [label="1"]
+  node20 -> node21
+  node20 -> node22
+  node19 -> node20
+  node23 [label="="]
+  node24 [label="Y"]
+  node25 [label="3"]
+  node23 -> node24
+  node23 -> node25
+  node19 -> node23
+  node26 [label="NoOp"]
+  node19 -> node26
+  node18 -> node19
+  node27 [label="Compound SIMPLE"]
+  node28 [label="Label 6"]
+  node29 [label="="]
+  node30 [label="X"]
+  node31 [label="+"]
+  node32 [label="X"]
+  node33 [label="1"]
+  node31 -> node32
+  node31 -> node33
+  node29 -> node30
+  node29 -> node31
+  node28 -> node29
+  node34 [label="NoOp"]
+  node28 -> node34
+  node27 -> node28
+  node35 [label="Compound SIMPLE"]
+  node36 [label="Label 7"]
+  node37 [label="NoOp"]
+  node36 -> node37
+  node35 -> node36
+  node1 -> node2
+  node1 -> node10
+  node1 -> node18
+  node1 -> node27
+  node1 -> node35
+}

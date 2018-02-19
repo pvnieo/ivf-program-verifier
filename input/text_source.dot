@@ -1,0 +1,106 @@
+digraph astgraph {
+  node [shape=circle, fontsize=12, fontname="Courier", height=.1];
+  ranksep=.3;
+  edge [arrowsize=.5]
+  node1 [label="Compounds"]
+  node2 [label="Compound IF"]
+  node3 [label="IF"]
+  node4 [label="Label 1"]
+  node5 [label="<"]
+  node6 [label="X"]
+  node7 [label="0"]
+  node5 -> node6
+  node5 -> node7
+  node4 -> node5
+  node3 -> node4 [label="COND"]
+  node8 [label="Compounds"]
+  node9 [label="Compound SIMPLE"]
+  node10 [label="Label 2"]
+  node11 [label="="]
+  node12 [label="X"]
+  node13 [label="*"]
+  node14 [label="X"]
+  node15 [label="unary -"]
+  node16 [label="1"]
+  node15 -> node16
+  node13 -> node14
+  node13 -> node15
+  node11 -> node12
+  node11 -> node13
+  node10 -> node11
+  node17 [label="NoOp"]
+  node10 -> node17
+  node9 -> node10
+  node8 -> node9
+  node3 -> node8 [label="IF TRUE"] 
+  node18 [label="Compounds"]
+  node19 [label="Compound SIMPLE"]
+  node20 [label="Label 3"]
+  node21 [label="="]
+  node22 [label="X"]
+  node23 [label="-"]
+  node24 [label="1"]
+  node25 [label="X"]
+  node23 -> node24
+  node23 -> node25
+  node21 -> node22
+  node21 -> node23
+  node20 -> node21
+  node26 [label="NoOp"]
+  node20 -> node26
+  node19 -> node20
+  node18 -> node19
+  node3 -> node18 [label="ELSE"] 
+  node2 -> node3
+  node27 [label="Compound IF"]
+  node28 [label="IF"]
+  node29 [label="Label 4"]
+  node30 [label="=="]
+  node31 [label="X"]
+  node32 [label="1"]
+  node30 -> node31
+  node30 -> node32
+  node29 -> node30
+  node28 -> node29 [label="COND"]
+  node33 [label="Compounds"]
+  node34 [label="Compound SIMPLE"]
+  node35 [label="Label 5"]
+  node36 [label="="]
+  node37 [label="X"]
+  node38 [label="1"]
+  node36 -> node37
+  node36 -> node38
+  node35 -> node36
+  node39 [label="NoOp"]
+  node35 -> node39
+  node34 -> node35
+  node33 -> node34
+  node28 -> node33 [label="IF TRUE"] 
+  node40 [label="Compounds"]
+  node41 [label="Compound SIMPLE"]
+  node42 [label="Label 6"]
+  node43 [label="="]
+  node44 [label="X"]
+  node45 [label="+"]
+  node46 [label="X"]
+  node47 [label="1"]
+  node45 -> node46
+  node45 -> node47
+  node43 -> node44
+  node43 -> node45
+  node42 -> node43
+  node48 [label="NoOp"]
+  node42 -> node48
+  node41 -> node42
+  node40 -> node41
+  node28 -> node40 [label="ELSE"] 
+  node27 -> node28
+  node49 [label="Compound SIMPLE"]
+  node50 [label="Label 7"]
+  node51 [label="NoOp"]
+  node50 -> node51
+  node49 -> node50
+  node1 -> node2
+  node1 -> node27
+  node1 -> node49
+}

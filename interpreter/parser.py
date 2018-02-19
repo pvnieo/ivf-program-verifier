@@ -114,16 +114,6 @@ class Block(AST):
         self.statement_list = statement_list
         self.source = None
 
-class VarDecl(AST):
-    def __init__(self, var_node, type_node):
-        self.var_node = var_node
-        self.type_node = type_node
-
-class Type(AST):
-    def __init__(self, token):
-        self.token = token
-        self.value = token.value
-
 class Program(AST):
     def __init__(self, name, compounds):
         self.name = name
@@ -234,16 +224,6 @@ class Parser(object):
         nodes = self.statement_list()
         root = Block(label, nodes)
         return root
-
-    def type_spec(self):
-        """type_spec : INTEGER
-                     | REAL
-        """
-        token = self.current_token
-        if self.current_token.type == INTEGER:
-            self.eat(INTEGER)
-        node = Type(token)
-        return node
 
     def label(self, type):
         """
@@ -376,16 +356,15 @@ class Parser(object):
 
     def parse(self):
         """
-        program : BOF compounds EOF
+        program :  compounds EOF
         compounds : compound | compounds
         compound : if_block | while_block | block
-        if_block : IF( * cond_block * ) * { * compound * }
-                    | IF( * cond_block * ) * { compound } * ELSE * { * compound * }
-        while_block : WHILE( * cond_block * ) * { * compound * }
+        if_block : IF(  cond_block  )  {  compounds  }
+                    | IF(  cond_block  )  { compounds }  ELSE  {  compounds  }
+        while_block : WHILE(  cond_block  )  {  compounds  }
         cond_block : label condition
         block : label statement_list
         condition : variable SUPERIOR|INFERIOR|EQUAL expr
-        variable_declaration : ID (COMMA ID)* COLON type_spec
         statement_list : statement
                        | statement SEMI statement_list
         statement : statement_list
@@ -394,7 +373,7 @@ class Parser(object):
         assignment_statement : variable ASSIGN expr
         empty :
         expr : term ((PLUS | MINUS) term)*
-        term : factor ((MUL | INTEGER_DIV | FLOAT_DIV) factor)*
+        term : factor ((MUL | INTEGER_DIV )  factor)*
         factor : PLUS factor
                | MINUS factor
                | INTEGER_CONST

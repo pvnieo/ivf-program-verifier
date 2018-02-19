@@ -49,6 +49,9 @@ def main():
     if not_visited == []:
         print()
         print('>> Critere TA TRUE')
+    else:
+        print()
+        print('>> Critere TA FALSE')
 
 if __name__ == '__main__':
     main()
