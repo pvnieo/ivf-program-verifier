@@ -6,16 +6,15 @@ import sys
 # to debug
 sys.argv.append('input/text_source.txt')
 sys.argv.append('datatests/dt2.txt')
-sys.argv.append('6')
 
 text_source = open(sys.argv[1], 'r').read()
 text_datatestset = open(sys.argv[2], 'r').read()
-K = int(sys.argv[3])
 
 dts = DatatestSet(text_datatestset)
 dts.parse()
 i = 1
-visited = []
+while_dict_list = []
+critere = True
 for dt in dts.datatests:
     """ Evaluate program for each datatest """
     print('====================================')
@@ -30,36 +29,29 @@ for dt in dts.datatests:
     cfgparser.parse()
     cfginterpreter = CfgInterpreter(cfgparser)
     cfginterpreter.interpretAssigments(dt.ini_assigns)
-    cfginterpreter.interpretCfg()
-    print('/------- Path visited -------/ ')
-    i_visited = sorted(cfginterpreter.visited)
-    print(i_visited)
-    visited.append(i_visited)
+    # we don't really count the initial test assigment as definition
+    cfginterpreter.interpreter.toUse = []
+    # variable so that an exception is raised when a variable is not used after a declaration i.e. between two declarations
+    cfginterpreter.interpreter.raiseExceptionIfNotUsed = True
+    try:
+        while_dict = cfginterpreter.interpretCfg()
+    except RuntimeError:
+        critere = False
+    print('/------- Variables declarations not used at the end of the program: -------/ ')
+    print(cfginterpreter.interpreter.toUse)
+    if cfginterpreter.interpreter.toUse != []:
+        critere = False
     print('/------- Variables final evaluation -------/ ')
-    for k, v in sorted(cfginterpreter.interpreter.GLOBAL_SCOPE.items()):
+    for k, v in cfginterpreter.interpreter.GLOBAL_SCOPE.items():
         print('%s = %s' % (k, v))
     i += 1
 print('====================================')
 print('------- Result of datatest set (jeu de donnee) --------')
 print('====================================')
-print('/------- All paths visited-------/')
-print(visited)
-print('/------- All paths -------/')
-k_paths = []
-for path in cfginterpreter.getPaths(K):
-    k_paths.append(sorted(path))
-print(k_paths)
-print('/------- Paths not visited -------/')
-not_visited = [ path for path in k_paths if path  not in visited]
-print(not_visited)
-
-if not_visited == []:
+if critere:
     print()
-    print('>> Critere TC TRUE')
+    print('>> Critere TDef  TRUE')
 else:
     print()
-    print('>> Critere TC FALSE')
+    print('>> Critere TDef FALSE')
 
-coverage_rate = round(1 - len(not_visited)/len(k_paths),2)*100
-print()
-print('>> Taux de couverture : {}%'.format(coverage_rate))

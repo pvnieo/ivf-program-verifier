@@ -1,11 +1,8 @@
-import sys
 import networkx as nx
 import copy
 from interpreter.Lexer import Lexer
 from interpreter.Parser import Parser
 from cfg.NodeExtractor import NodeExtractor
-import pydot as pydot
-import matplotlib.pyplot as plt
 
 class Node:
     def __init__(self, _num, type, value):
@@ -32,6 +29,8 @@ class CfgParser:
         self.previous_label = ''
         self.labelsIf = []
         self.labelsWhile = []
+        self.labelsAssigs = []
+        self.labels = []
 
     def visit(self, node):
         # to debug and follow which node is visited
@@ -88,10 +87,9 @@ class CfgParser:
         node.label = node.block.label
         self.labelsWhile.append(node.source)
         self.connectWhile(node.source, node.label, "", node)
-        # for WHILE, we need to connect not only the last label of the true block
-        # to the next compound
-        # but ALSO the decision label
-        node.label = [node.label, node.source]
+        # for WHILE, we need to connect only the last label of the true block
+        # to decision label
+        node.label = [node.source]
 
 
     def visit_CondBlock(self, node):
@@ -117,6 +115,7 @@ class CfgParser:
         self.cfg.add_node(label, label=label)
         #if self.previous_label != '':
             #self.cfg.add_edge(self.previous_label, label)
+        self.labels.append(label)
         self.previous_label = label
 
     def connectIf(self,cl,tl, fl, node):
@@ -208,7 +207,7 @@ class CfgParser:
         return self.visit(node.left) + self.s(node.op.value) + self.visit(node.right)
 
     def visit_UnaryOp(self, node):
-        return str(self.visit(node.expr))
+        return str(node.op.value) + str(self.visit(node.expr))
 
     def visit_Assign(self, node):
         self.visit(node.left)
@@ -232,6 +231,7 @@ class CfgParser:
 
     def parse(self):
         self.visit(self.ast)
+        self.labelsAssigns = [l for l in self.labels if l not in self.labelsIf and l not in self.labelsWhile]
         self.show()
 
     def show(self):
@@ -244,6 +244,6 @@ class CfgParser:
         #plt.show()
 
         nx.drawing.nx_pydot.write_dot(self.cfg, "cfg.dot")
-        print('To visualize : ')
-        print('dot -Tpng -o cfg.png cfg.dot')
+        #print('To visualize : ')
+        #print('dot -Tpng -o cfg.png cfg.dot')
 

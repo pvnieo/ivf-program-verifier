@@ -21,7 +21,6 @@ def main():
         print('-------Datatest '+str(i)+'--------')
         print('====================================')
         """ Add assigments to program """
-        ini_source = ' 0: '
         dt.parse()
         text_source = dt.ini_source + text_source_original
         print('/------- Evaluating with initial assigments:  -------/ ')

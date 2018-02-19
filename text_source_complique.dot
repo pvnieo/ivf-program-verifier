@@ -238,9 +238,15 @@ digraph astgraph {
   node121 [label="NoOp"]
   node107 -> node121 [label="ELSE"] 
   node106 -> node107
+  node122 [label="Compound SIMPLE"]
+  node123 [label="Label 16"]
+  node124 [label="NoOp"]
+  node123 -> node124
+  node122 -> node123
   node1 -> node2
   node1 -> node25
   node1 -> node72
   node1 -> node83
   node1 -> node106
+  node1 -> node122
 }

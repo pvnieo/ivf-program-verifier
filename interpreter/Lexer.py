@@ -87,7 +87,7 @@ class Lexer(object):
         else:
             self.current_char = self.text[self.pos]
         # for debugging print(self.current_char)
-        # print(self.current_char)
+        #print(self.current_char)
 
     def peek(self):
         peek_pos = self.pos + 1

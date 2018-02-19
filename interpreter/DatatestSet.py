@@ -6,7 +6,10 @@ class Datatest:
         """ therefore assigments will hold ["X=Xi", "Y=Yi"] """
         self.text = text
         self.assigments = []
+        # ini_source is a code piece with label 0, used for main-ta and main-d when we didn't have the cfg yet
         self.ini_source = '0: '
+        # ini_assigns is just the block (list) initial assigments
+        self.ini_assigns = ''
 
     def parse(self):
         n = len(self.text)
@@ -17,6 +20,7 @@ class Datatest:
         for assigment in assigments:
             self.add(assigment)
             self.ini_source = self.ini_source + assigment + ' ; '
+            self.ini_assigns = self.ini_assigns + assigment + ' ; '
 
     def add(self, assigment):
         self.assigments.append(assigment)

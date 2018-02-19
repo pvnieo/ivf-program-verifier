@@ -21,7 +21,6 @@ def main():
         print('-------Datatest '+str(i)+'--------')
         print('====================================')
         """ Add assigments to program """
-        ini_source = ' 0: '
         dt.parse()
         text_source = dt.ini_source + text_source_original
         print('/------- Evaluating with initial assigments:  -------/ ')
@@ -50,6 +49,9 @@ def main():
     if not_visited == []:
         print()
         print('>> Critere TD TRUE')
+    else :
+        print()
+        print('>> Critere TD FALSE')
 
 if __name__ == '__main__':
     main()

@@ -54,6 +54,8 @@ class Interpreter(NodeVisitor):
         import collections
         self.GLOBAL_SCOPE = collections.OrderedDict()
         self.visited = []
+        self.toUse = []
+        self.raiseExceptionIfNotUsed = False
 
     def visit_Program(self, node):
         for compound in node.compounds:
@@ -119,11 +121,18 @@ class Interpreter(NodeVisitor):
 
     def visit_Assign(self, node):
         var_name = node.left.value
+        if var_name not in self.toUse:
+            self.toUse.append(var_name)
+        else:
+            if self.raiseExceptionIfNotUsed :
+                raise RuntimeError('Var "{}" not used after declaration'.format(var_name))
         self.GLOBAL_SCOPE[var_name] = self.visit(node.right)
 
     def visit_Var(self, node):
         var_name = node.value
         var_value = self.GLOBAL_SCOPE.get(var_name)
+        if var_name in self.toUse:
+            self.toUse.remove(var_name)
         if var_value is None:
             # If a variable isn't defined yet, return 0
             return 0
