@@ -134,8 +134,8 @@ class Interpreter(NodeVisitor):
         if var_name in self.toUse:
             self.toUse.remove(var_name)
         if var_value is None:
-            # If a variable isn't defined yet, return 0
-            return 0
+            # If a variable isn't defined yet, raise exception
+            raise RuntimeError('{} is not defined, it can\'t be used - check that {} is defined in program or in datatest'.format(var_name, var_name))
         else:
             return var_value
 

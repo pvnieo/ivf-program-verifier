@@ -38,9 +38,10 @@ class DatatestSet:
         text = ''
         for line in lines:
             if line.find('#') == -1:
-                """ Only adding lines without # """
+                # Only adding lines without '#'
                 text = text+line
         self.text = text
+        # list of données de jeu
         self.datatests = []
 
     def parse(self):

@@ -59,7 +59,11 @@ if not_visited == []:
 else:
     print()
     print('>> Critere TC FALSE')
-
-coverage_rate = round(1 - len(not_visited)/len(k_paths),2)*100
-print()
-print('>> Taux de couverture : {}%'.format(coverage_rate))
+if len(k_paths) > 0 :
+    coverage_rate = round(1 - len(not_visited)/len(k_paths),2)*100
+    print()
+    print('>> Taux de couverture : {}%'.format(coverage_rate))
+else :
+    coverage_rate = 100
+    print()
+    print('>> Taux de couverture : {}% : no {}-paths found'.format(coverage_rate, K))

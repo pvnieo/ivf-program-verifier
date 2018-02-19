@@ -7,7 +7,7 @@
 
 ## To visualize
 # C:\Program Files (x86)\Graphviz2.38\bin
-# python mainvisualize.py input/text_source_complique.txt > text_source_complique.dot && dot -Tpng -o text_source_complique.png text_source_complique.dot
+# python mainvisualize.py input/text_source.txt > input/text_source.dot && dot -Tpng -o input/text_source.png input/text_source.dot
 
 import argparse
 import textwrap

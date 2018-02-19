@@ -121,6 +121,7 @@ class CfgInterpreter:
         current_node = self.getSourceNode()
         self.visited.append(current_node)
         while current_node != target_node:
+            print(current_node)
             # see if there is actually a decision to take when node is (if|while)
             if current_node in self.cfgparser.labelsIf or \
                     current_node in self.cfgparser.labelsWhile:
@@ -135,12 +136,12 @@ class CfgInterpreter:
                         if while_dict[current_node][0] > while_dict[current_node][1]:
                             while_dict[current_node][1] = while_dict[current_node][0]
                     # get the node executed when cond is not true for while anymore
-                    node_to_exit = max(succ)
+                node_to_exit = max(succ)
                 for s in succ:
                     label = self.cfg.edges[decision_node, s]['label']
                     if self.interpretCondition(label):
                         # rebooting compteur for node
-                        if s == node_to_exit:
+                        if s == node_to_exit and current_node in self.cfgparser.labelsWhile:
                             while_dict[current_node][0] = 0
                         current_node = s
             # else the edge represents an assigment
