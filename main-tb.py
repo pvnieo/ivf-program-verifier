@@ -6,7 +6,7 @@ import sys
 # usage : python main-ta.py input/text_source.txt datatests/dt1.txt
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         print('EXPECTING AS ARGV: SOURCE_CODE DATATESTSET I')
         exit()
     text_source = open(sys.argv[1], 'r').read()
