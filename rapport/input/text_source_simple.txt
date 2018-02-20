@@ -1,0 +1,8 @@
+# This is a comment #
+2:   X = 0 - X ;
+3:   X = 1 - X ;
+5:   X = 1 ;
+     Y = 3 ;
+6:   X = X + 1 ;
+# Empty label to mark assigmnets #
+7:

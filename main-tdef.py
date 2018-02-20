@@ -3,7 +3,7 @@ from cfg.CfgInterpreter import  CfgInterpreter
 from interpreter.DatatestSet import DatatestSet
 import sys
 
-# usage : python main-tdef.py input/text_source.txt datatests/dt1.txt 2
+# usage : python main-tdef.py input/text_source_complique.txt datatests/dt2.txt
 
 def main():
     if len(sys.argv) != 3 :
@@ -15,7 +15,6 @@ def main():
     dts = DatatestSet(text_datatestset)
     dts.parse()
     i = 1
-    while_dict_list = []
     critere = True
     for dt in dts.datatests:
         """ Evaluate program for each datatest """
@@ -31,12 +30,12 @@ def main():
         cfgparser.parse()
         cfginterpreter = CfgInterpreter(cfgparser)
         cfginterpreter.interpretAssigments(dt.ini_assigns)
-        # we don't really count the initial test assigment as definition
+        # we don't really count the initial test assigment as definition so we empty the list
         cfginterpreter.interpreter.toUse = []
         # variable so that an exception is raised when a variable is not used after a declaration i.e. between two declarations
         cfginterpreter.interpreter.raiseExceptionIfNotUsed = True
         try:
-            while_dict = cfginterpreter.interpretCfg()
+            cfginterpreter.interpretCfg()
         except RuntimeError:
             critere = False
         print('/------- Variables declarations not used at the end of the program: -------/ ')

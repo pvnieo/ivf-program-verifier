@@ -1,0 +1,22 @@
+1: Y = Y + 5 ;
+   X = Y + X ;
+# Testing a while #
+WHILE( 2: i < 3 ){
+    3: X = X + 3 ;
+    IF( 4: X < 0 ){
+        5: X = -X ;
+    }
+    6: X = X * 2 ;
+    WHILE( 7: j < 3 ){
+        8: Y = Y + 2 ;
+        X = 2 ;
+        j = j + 1 ;
+    }
+    9: X = X + 2 ;
+    i = i + 1 ;
+}
+IF( 10: X < 10 ){
+    11: Y = Y + X ;
+}
+# The program actually needs an empty label to mark end of program #
+12:
