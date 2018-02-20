@@ -46,7 +46,7 @@ def main():
     print('/------- All labels DECISIONS-------/')
     print([ l.value for l in interpreter.parser.labels if l.type == 'IF' or l.type == 'WHILE' ] )
     print('/------- Labels DECISIONS not visited -------/ ')
-    not_visited = [ u.value for u in interpreter.parser.labels if u.value not in visited and u.type == 'IF' or u.type == 'WHILE' ]
+    not_visited = [ u.value for u in interpreter.parser.labels if u.value not in visited and (u.type == 'IF' or u.type == 'WHILE') ]
     print(not_visited)
     if not_visited == []:
         print()
