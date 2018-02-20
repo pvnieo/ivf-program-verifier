@@ -69,12 +69,6 @@ class CfgInterpreter:
             self.interpreter.visit(statement)
         # print(self.interpreter.GLOBAL_SCOPE)
 
-    def arePathsK(self, paths, K):
-        for path in paths:
-            if len(path) != K:
-                return False
-        return True
-
     def getPaths(self, k):
         """
         Interpret the full CFG
@@ -121,7 +115,7 @@ class CfgInterpreter:
         current_node = self.getSourceNode()
         self.visited.append(current_node)
         while current_node != target_node:
-            print(current_node)
+            #print(current_node)
             # see if there is actually a decision to take when node is (if|while)
             if current_node in self.cfgparser.labelsIf or \
                     current_node in self.cfgparser.labelsWhile:

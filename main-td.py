@@ -31,7 +31,7 @@ def main():
         lexer = Lexer(text_source)
         parser = Parser(lexer)
         interpreter = Interpreter(parser)
-        result = interpreter.interpret()
+        interpreter.interpret()
         print('/------- Labels DECISIONS visited -------/ ')
         i_visited = [l.value for l in interpreter.visited if l.type == 'IF' or l.type == 'WHILE' ]
         print(i_visited)
@@ -44,7 +44,8 @@ def main():
     print('------- Result of datatest set (jeu de donnee) --------')
     print('====================================')
     print('/------- All labels DECISIONS-------/')
-    print([ l.value for l in interpreter.parser.labels if l.type == 'IF' or l.type == 'WHILE' ] )
+    decision_labels = [ l.value for l in interpreter.parser.labels if l.type == 'IF' or l.type == 'WHILE' ]
+    print(decision_labels)
     print('/------- Labels DECISIONS not visited -------/ ')
     not_visited = [ u.value for u in interpreter.parser.labels if u.value not in visited and (u.type == 'IF' or u.type == 'WHILE') ]
     print(not_visited)
@@ -54,6 +55,8 @@ def main():
     else :
         print()
         print('>> Critere TD FALSE')
+    coverage_rate = round(1 - len(not_visited)/len(decision_labels),2)*100
+    print('>> Taux de couverture : {}%'.format(coverage_rate))
 
 if __name__ == '__main__':
     main()

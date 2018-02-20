@@ -32,7 +32,7 @@ def main():
         lexer = Lexer(text_source)
         parser = Parser(lexer)
         interpreter = Interpreter(parser)
-        result = interpreter.interpret()
+        interpreter.interpret()
         print('/------- Labels ASSIGN visited -------/ ')
         i_visited = [l.value for l in interpreter.visited if l.type == 'ASSIGN']
         print(i_visited)
@@ -45,7 +45,8 @@ def main():
     print('------- Result of datatest set (jeu de donnee) --------')
     print('====================================')
     print('/------- All labels ASSIGN-------/')
-    print([ l.value for l in interpreter.parser.labels if l.type == 'ASSIGN' ] )
+    assigns_label = [ l.value for l in interpreter.parser.labels if l.type == 'ASSIGN' ]
+    print(assigns_label)
     print('/------- Labels ASSIGN not visited -------/ ')
     not_visited = [ u.value for u in interpreter.parser.labels if u.value not in visited and u.type == 'ASSIGN']
     print(not_visited)
@@ -55,6 +56,8 @@ def main():
     else:
         print()
         print('>> Critere TA FALSE')
+    coverage_rate = round(1 - len(not_visited)/len(assigns_label),2)*100
+    print('>> Taux de couverture : {}%'.format(coverage_rate))
 
 if __name__ == '__main__':
     main()

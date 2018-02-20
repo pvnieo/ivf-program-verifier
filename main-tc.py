@@ -33,7 +33,7 @@ def main():
         cfginterpreter.interpretAssigments(dt.ini_assigns)
         cfginterpreter.interpretCfg()
         print('/------- Path visited -------/ ')
-        i_visited = sorted(cfginterpreter.visited)
+        i_visited = cfginterpreter.visited
         print(i_visited)
         visited.append(i_visited)
         print('/------- Variables final evaluation -------/ ')
@@ -48,7 +48,7 @@ def main():
     print('/------- All paths -------/')
     k_paths = []
     for path in cfginterpreter.getPaths(K):
-        k_paths.append(sorted(path))
+        k_paths.append(path)
     print(k_paths)
     print('/------- Paths not visited -------/')
     not_visited = [ path for path in k_paths if path  not in visited]

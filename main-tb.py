@@ -3,7 +3,7 @@ from cfg.CfgInterpreter import  CfgInterpreter
 from interpreter.DatatestSet import DatatestSet
 import sys
 
-# usage : python main-ta.py input/text_source.txt datatests/dt1.txt
+# usage : python main-tb.py input/text_source_while_in_a_while.txt datatests/dt3.txt 7
 
 def main():
     if len(sys.argv) != 4:
@@ -57,7 +57,7 @@ def main():
     for key in while_dict_max.keys():
         if while_dict_max[key] > I:
             critere = False
-        print("While {} iter {} ".format(key, while_dict_max[key]))
+        print("While {} has had a maximum of {} iterations".format(key, while_dict_max[key]))
     if critere:
         print()
         print('>> Critere TC for i = {} TRUE'.format(I))
