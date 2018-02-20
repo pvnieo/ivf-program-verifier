@@ -7,7 +7,7 @@
 
 ## To visualize
 # C:\Program Files (x86)\Graphviz2.38\bin
-# python mainvisualize.py input/text_source.txt > input/text_source.dot && dot -Tpng -o input/text_source.png input/text_source.dot
+# python mainvisualize_ast.py input/text_source.txt && dot -Tpng -o input/text_source_ast.png ast.dot
 
 import argparse
 import textwrap
@@ -204,7 +204,12 @@ def main():
     parser = Parser(lexer)
     viz = ASTVisualizer(parser)
     content = viz.gendot()
-    print(content)
+    dotfile = open('ast.dot', 'w+')
+    dotfile.write(content)
+    print('To visualize : ')
+    print('dot -Tpng -o {} ast.dot'.format(fname.replace('.txt','_ast.png')))
+
+
 
 if __name__ == '__main__':
     main()

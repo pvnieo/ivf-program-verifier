@@ -4,10 +4,13 @@ from interpreter.Parser import Parser
 from interpreter.DatatestSet import DatatestSet, Datatest
 import sys
 
-# usage : python main.py input/text_source.txt datatests/dt1.txt
+# usage : python main-ta.py input/text_source.txt datatests/dt1.txt
 
 def main():
 
+    if len(sys.argv) != 2 :
+        print('EXPECTING AS ARGV: SOURCE_CODE DATATESTSET ')
+        exit()
     text_source_original = open(sys.argv[1], 'r').read()
     text_datatestset = open(sys.argv[2], 'r').read()
 
